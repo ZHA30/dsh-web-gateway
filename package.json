@@ -43,5 +43,14 @@
     "test": "node --test tests/*.test.js",
     "check": "node --check src/host/index.js && node --check src/host/auth.js && node --check src/host/proxy.js && node --check src/host/cloudflare.js && node --check src/host/managed-cloudflared.js && node --check src/client/index.js"
   },
-  "icon": "./assets/icon.svg"
+  "icon": "./assets/icon.svg",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZHA30/dsh-web-gateway.git"
+  },
+  "homepage": "https://github.com/ZHA30/dsh-web-gateway#readme",
+  "bugs": {
+    "url": "https://github.com/ZHA30/dsh-web-gateway/issues"
+  }
 }

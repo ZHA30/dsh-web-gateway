@@ -1,0 +1,46 @@
+name: Publish
+on:
+  push:
+    tags: ['v*.*.*']
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm install --global npm@11.20.0
+      - name: Check version
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; const p = JSON.parse(fs.readFileSync("package.json")); const l = JSON.parse(fs.readFileSync("package-lock.json")); if (process.env.GITHUB_REF_NAME !== `v${p.version}` || l.version !== p.version || l.packages[""].version !== p.version) process.exit(1)'
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+        env:
+          DSH_HOME: ${{ runner.temp }}/dsh-home
+      - name: Pack
+        run: npm pack --pack-destination "$RUNNER_TEMP"
+      - name: Verify package installation
+        run: |
+          mkdir "$RUNNER_TEMP/package-check"
+          cd "$RUNNER_TEMP/package-check"
+          npm init --yes > /dev/null
+          npm install --ignore-scripts "$RUNNER_TEMP"/*.tgz
+          node --input-type=module -e 'import fs from "node:fs"; const p = JSON.parse(fs.readFileSync(process.argv[1])); const m = await import(p.name); if (typeof m.apply !== "function") process.exit(1)' "$GITHUB_WORKSPACE/package.json"
+      - name: Preserve package
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: ${{ runner.temp }}/*.tgz
+          if-no-files-found: error
+      - name: Publish
+        run: |
+          version=$(node -p 'require("./package.json").version')
+          if [[ "$version" == *-* ]]; then tag=next; else tag=latest; fi
+          npm publish "$RUNNER_TEMP"/*.tgz --registry https://registry.npmjs.org --access public --tag "$tag" --provenance
