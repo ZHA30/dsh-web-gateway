@@ -18,6 +18,8 @@ The plugin provides local access, authentication, and Cloudflare Tunnel manageme
 - **Access links**: Open the local or tunnel address from settings, with the host token included when available.
 - **Status**: View listener and tunnel state and retry a failed tunnel from settings.
 
+A remotely managed tunnel requires a public hostname configured in Cloudflare to route to the origin shown in settings.
+
 ## Install
 
 Install the plugin into a DSH profile and restart the host.
