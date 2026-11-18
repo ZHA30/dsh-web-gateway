@@ -1,12 +1,54 @@
 window.__ModuleLoader__.load({
   id: 'dsh-web-gateway',
   factory(require) {
-    const { createElement: h, useId, useState } = require('react')
+    const { createElement: h, useId, useRef, useState } = require('react')
     const { Button, Input, Switch, Menu, IconCopyOutlineRegular, IconChevronUpOutlineRegular, IconChevronDownOutlineRegular } = require('@deepseek-ai/dsh-client-ui-primitives')
-    const zh = {"invalidCommand":"无法从命令中识别 Tunnel token","copy":"复制","copied":"已复制","copyFailed":"复制失败","connector":"连接程序","checking":"检查更新中","downloading":"下载中","installingFile":"安装中","uninstalling":"卸载中","quickMode":"临时地址","tokenMode":"固定域名","tokenUnavailable":"Token 不可用","install":"安装","update":"更新","uninstall":"卸载","installing":"处理中","notInstalled":"未安装","origin":"源站地址","copyOrigin":"在 Cloudflare 控制台中配置此源站地址","entryDesc":"指定本地监听的地址和端口","authenticationDesc":"用于登录网页界面","tunnelDesc":"通过 Cloudflare Tunnel 访问网页界面","hostDesc":"接收网页连接的 IP 地址","portDesc":"接收网页连接的端口","usernameDesc":"Basic Auth 登录账号","passwordDesc":"Basic Auth 登录密码","hostnameDesc":"绑定到隧道的域名","executableDesc":"cloudflared 可执行文件的位置","originPortDesc":"隧道连接的本地端口","secretDesc":"Cloudflare 提供的隧道凭据","modeDesc":"选择临时地址或固定域名","off":"关闭","stopped":"已关闭","starting":"启动中","listening":"监听中","connected":"已连接","failed":"启动失败","reading":"读取状态中","conflict":"未能应用更改，请检查输入后重试","entry":"本地监听","host":"绑定地址","port":"端口","authentication":"登录方式","native":"宿主原生认证","username":"账号","password":"密码","keep":"留空保持不变","mode":"模式","quick":"Quick · 临时地址","token":"Token · 固定域名","originPort":"源站端口","executable":"cloudflared 路径","hostname":"公开域名","retry":"重试 Tunnel","loading":"加载配置中","unavailable":"配置不可用","nav":"Web Gateway"}
-    const en = {"invalidCommand":"Could not find the tunnel token in the command","copy":"Copy","copied":"Copied","copyFailed":"Copy failed","connector":"Connector","checking":"Checking release","downloading":"Downloading","installingFile":"Installing","uninstalling":"Uninstalling","quickMode":"Temporary address","tokenMode":"Custom hostname","tokenUnavailable":"Token unavailable","install":"Install","update":"Update","uninstall":"Uninstall","installing":"Working","notInstalled":"Not installed","origin":"Origin","copyOrigin":"Configure this origin in the Cloudflare dashboard","entryDesc":"Address and port for local connections","authenticationDesc":"Credentials used to sign in to the web interface","tunnelDesc":"Access the web interface through Cloudflare Tunnel","hostDesc":"IP address for incoming connections","portDesc":"Port for incoming connections","usernameDesc":"Basic Auth sign-in name","passwordDesc":"Basic Auth sign-in password","hostnameDesc":"Domain assigned to the tunnel","executableDesc":"Path to the cloudflared executable","originPortDesc":"Local port used by the tunnel","secretDesc":"Tunnel credential issued by Cloudflare","modeDesc":"Use a temporary address or a fixed domain","off":"Off","stopped":"Stopped","starting":"Starting","listening":"Listening","connected":"Connected","failed":"Failed","reading":"Reading status","conflict":"Could not apply change; check the value and retry","entry":"Local listener","host":"Bind address","port":"Port","authentication":"Sign-in method","native":"Host authentication","username":"Username","password":"Password","keep":"Leave blank to keep","mode":"Mode","quick":"Quick · Temporary URL","token":"Token · Fixed hostname","originPort":"Origin port","executable":"cloudflared path","hostname":"Public hostname","retry":"Retry tunnel","loading":"Loading configuration","unavailable":"Configuration unavailable","nav":"Web Gateway"}
+    const zh = {"invalidCommand":"无法从命令中识别 Tunnel token","copy":"复制","copied":"已复制","copyFailed":"复制失败","connector":"连接程序","checking":"检查更新中","downloading":"下载中","installingFile":"安装中","uninstalling":"卸载中","quickMode":"临时地址","tokenMode":"固定域名","tokenUnavailable":"Token 不可用","install":"安装","update":"更新","uninstall":"卸载","installing":"处理中","notInstalled":"未安装","origin":"源站地址","copyOrigin":"在 Cloudflare 控制台中配置此源站地址","entryDesc":"指定本地监听的地址和端口","authenticationDesc":"用于登录网页界面","tunnelDesc":"通过 Cloudflare Tunnel 访问网页界面","hostDesc":"接收网页连接的 IP 地址","portDesc":"接收网页连接的端口","usernameDesc":"Basic Auth 登录账号","passwordDesc":"Basic Auth 登录密码","hostnameDesc":"绑定到隧道的域名","executableDesc":"cloudflared 可执行文件的位置","originPortDesc":"隧道连接的本地端口","secretDesc":"Cloudflare 提供的隧道凭据","modeDesc":"选择临时地址或固定域名","off":"关闭","stopped":"已关闭","starting":"启动中","listening":"监听中","connected":"已连接","failed":"启动失败","reading":"读取状态中","conflict":"未能应用更改，请检查输入后重试","entry":"代理监听","host":"绑定地址","port":"端口","authentication":"登录方式","native":"宿主原生认证","username":"账号","password":"密码","keep":"留空保持不变","mode":"模式","quick":"Quick · 临时地址","token":"Token · 固定域名","originPort":"源站端口","executable":"cloudflared 路径","hostname":"公开域名","retry":"重试 Tunnel","loading":"加载配置中","unavailable":"配置不可用","nav":"Web Gateway"}
+    const en = {"invalidCommand":"Could not find the tunnel token in the command","copy":"Copy","copied":"Copied","copyFailed":"Copy failed","connector":"Connector","checking":"Checking release","downloading":"Downloading","installingFile":"Installing","uninstalling":"Uninstalling","quickMode":"Temporary address","tokenMode":"Custom hostname","tokenUnavailable":"Token unavailable","install":"Install","update":"Update","uninstall":"Uninstall","installing":"Working","notInstalled":"Not installed","origin":"Origin","copyOrigin":"Configure this origin in the Cloudflare dashboard","entryDesc":"Address and port for local connections","authenticationDesc":"Credentials used to sign in to the web interface","tunnelDesc":"Access the web interface through Cloudflare Tunnel","hostDesc":"IP address for incoming connections","portDesc":"Port for incoming connections","usernameDesc":"Basic Auth sign-in name","passwordDesc":"Basic Auth sign-in password","hostnameDesc":"Domain assigned to the tunnel","executableDesc":"Path to the cloudflared executable","originPortDesc":"Local port used by the tunnel","secretDesc":"Tunnel credential issued by Cloudflare","modeDesc":"Use a temporary address or a fixed domain","off":"Off","stopped":"Stopped","starting":"Starting","listening":"Listening","connected":"Connected","failed":"Failed","reading":"Reading status","conflict":"Could not apply change; check the value and retry","entry":"Proxy listener","host":"Bind address","port":"Port","authentication":"Sign-in method","native":"Host authentication","username":"Username","password":"Password","keep":"Leave blank to keep","mode":"Mode","quick":"Quick · Temporary URL","token":"Token · Fixed hostname","originPort":"Origin port","executable":"cloudflared path","hostname":"Public hostname","retry":"Retry tunnel","loading":"Loading configuration","unavailable":"Configuration unavailable","nav":"Web Gateway"}
+    zh.qrCode = '显示二维码'
+    en.qrCode = 'Show QR code'
     const phases = { stopped: 'stopped', starting: 'starting', listening: 'listening', connected: 'connected', error: 'failed' }
     const address = 'dsh-resource://web-gateway/status'
+    async function copyText(value) {
+      if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(value)
+      const input = document.createElement('textarea')
+      input.value = value
+      input.style.position = 'fixed'
+      input.style.opacity = '0'
+      document.body.append(input)
+      try {
+        input.select()
+        if (!document.execCommand('copy')) throw new Error('copy failed')
+      } finally { input.remove() }
+    }
+    function Address({ address, loginUrl, qr, unavailable, t }) {
+      const popup = useRef(null)
+      const [copyMessage, setCopyMessage] = useState('')
+      const label = t('qrCode')
+      async function copy() {
+        try { await copyText(loginUrl || address); setCopyMessage(t('copied')) }
+        catch { setCopyMessage(t('copyFailed')) }
+      }
+      function toggle(event) {
+        const panel = popup.current
+        if (panel.matches(':popover-open')) { panel.hidePopover(); return }
+        const rect = event.currentTarget.getBoundingClientRect()
+        panel.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - 216))}px`
+        panel.style.top = `${rect.bottom + 208 <= window.innerHeight ? rect.bottom + 6 : Math.max(8, rect.top - 208)}px`
+        panel.showPopover()
+      }
+      return h('span', { className: 'dsh-wa-address-row' },
+        h('a', { className: 'dsh-wa-address', href: loginUrl || address, target: '_blank', rel: 'noreferrer', title: address },
+          h('span', null, address)),
+        h('button', { type: 'button', className: 'dsh-wa-qr-button', title: copyMessage || t('copy'), 'aria-label': t('copy'), onClick: copy },
+          h(IconCopyOutlineRegular, { size: 16, 'aria-hidden': true })),
+        qr && h('button', { type: 'button', className: 'dsh-wa-qr-button', title: label, 'aria-label': label, onClick: toggle },
+          h('svg', { viewBox: '0 0 24 24', width: 16, height: 16, fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true },
+            h('rect', { x: 3, y: 3, width: 5, height: 5, rx: 1 }), h('rect', { x: 16, y: 3, width: 5, height: 5, rx: 1 }), h('rect', { x: 3, y: 16, width: 5, height: 5, rx: 1 }),
+            h('path', { d: 'M21 16h-3a2 2 0 0 0-2 2v3 M21 21v.01 M12 7v3a2 2 0 0 1-2 2H7 M3 12h.01 M12 3h.01 M12 16v.01 M16 12h1 M21 12v.01 M12 21v-1' }))),
+        qr && h('span', { ref: popup, popover: 'auto', className: 'dsh-wa-qr-popover' }, h('img', { src: qr, alt: label })),
+        unavailable && h('span', null, t('tokenUnavailable')))
+    }
     function Caption({ title, description, indicator }) {
       return h('span', { className: 'dsh-wa-caption' }, h('span', null, title, indicator), h('small', null, description))
     }
@@ -99,19 +141,7 @@ window.__ModuleLoader__.load({
       }
       async function copyOrigin() {
         try {
-          const address = `http://127.0.0.1:${config.tunnel.originPort}`
-          if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(address)
-          else {
-            const input = document.createElement('textarea')
-            input.value = address
-            input.style.position = 'fixed'
-            input.style.opacity = '0'
-            document.body.append(input)
-            try {
-              input.select()
-              if (!document.execCommand('copy')) throw new Error('copy failed')
-            } finally { input.remove() }
-          }
+          await copyText(`http://127.0.0.1:${config.tunnel.originPort}`)
           setCopyMessage(t('copied'))
         } catch { setCopyMessage(t('copyFailed')) }
       }
@@ -119,9 +149,8 @@ window.__ModuleLoader__.load({
         const status = key === 'tunnel' ? runtime?.tunnel : runtime?.exposure
         const address = key === 'tunnel' ? status?.publicUrl : status?.url
         const description = address
-          ? h('a', { className: 'dsh-wa-address', href: status.loginUrl || address, target: '_blank',
-              rel: 'noreferrer', title: address }, h('span', null, address), h('span', { 'aria-hidden': true }, '↗'),
-              config.auth.enabled !== false && config.auth.mode === 'native' && !status.loginUrl && h('span', null, t('tokenUnavailable')))
+          ? h(Address, { address, loginUrl: status.loginUrl, qr: status.qr, t,
+              unavailable: config.auth.enabled !== false && config.auth.mode === 'native' && !status.loginUrl })
           : t(phases[status?.phase] || 'reading')
         return h(Section, { title, description, enabled: config.enabled !== false && config[key].enabled !== false, indicator, disabled: locked,
           toggle: value => run(() => config.enabled === false
@@ -236,9 +265,13 @@ window.__ModuleLoader__.load({
             .dsh-wa-actions { display:flex; gap:8px; }
             .dsh-wa-action { border:.5px solid var(--dsw-alias-border-l2); }
             .dsh-wa-caption small { min-width:0; max-width:360px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-            .dsh-wa-address { display:inline-flex; align-items:center; gap:5px; max-width:100%; min-width:0; color:var(--dsw-alias-link); vertical-align:bottom; }
+            .dsh-wa-address { display:inline-flex; align-items:center; gap:5px; flex:0 1 auto; max-width:100%; min-width:0; color:var(--dsw-alias-link); vertical-align:bottom; }
+            .dsh-wa-address-row { display:flex; align-items:center; gap:5px; min-width:0; line-height:20px; }
+            .dsh-wa-qr-button { display:inline-flex; flex:none; align-items:center; justify-content:center; width:20px; height:20px; padding:2px; border:0; border-radius:var(--dsw-radius-xs); background:transparent; color:var(--dsw-alias-label-tertiary); cursor:pointer; }
+            .dsh-wa-qr-button:hover { background:var(--dsw-alias-interactive-bg-hover); }
+            .dsh-wa-qr-popover { position:fixed; inset:auto; margin:0; padding:8px; border:.5px solid var(--dsw-alias-border-l2); border-radius:var(--dsw-radius-md); background:var(--dsw-alias-bg-layer-1); box-shadow:0 4px 16px #0003; }
+            .dsh-wa-qr-popover img { display:block; width:184px; height:184px; background:white; }
             .dsh-wa-address span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-            .dsh-wa-address span:last-child { flex:none; }
             .dsh-wa-form [role=alert] { overflow-wrap:anywhere; }
             .dsh-wa-options a { overflow-wrap:anywhere; }
             .dsh-wa-form p { font-size:13px; color:var(--dsw-alias-label-secondary); margin:0; }

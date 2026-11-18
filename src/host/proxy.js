@@ -12,7 +12,7 @@ function clean(headers) {
 }
 
 export function trusted(req, origins) {
-  if (req.headers['sec-fetch-site'] === 'cross-site') return false
+  if (req.headers['sec-fetch-site'] === 'cross-site' && !(req.method === 'GET' && req.headers['sec-fetch-mode'] === 'navigate' && req.headers['sec-fetch-dest'] === 'document')) return false
   const host = req.headers.host
   if (typeof host !== 'string') return false
   const allowed = origins().filter(Boolean).map(value => new URL(value))

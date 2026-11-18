@@ -1,5 +1,6 @@
 import { isIP } from 'node:net'
 import z from '@deepseek-ai/schemastery'
+import qrcode from 'qrcode-generator'
 import { createAuth } from './auth.js'
 import { listenProxy, urlHost } from './proxy.js'
 import { startTunnel } from './cloudflare.js'
@@ -53,6 +54,17 @@ export async function apply(ctx, config) {
   let publicUrl
   let managerBusy = false
   let managerProgress
+  const qrCache = new Map()
+  function qrData(value) {
+    if (!qrCache.has(value)) {
+      const qr = qrcode(0, 'M')
+      qr.addData(value, 'Byte')
+      qr.make()
+      if (qrCache.size >= 2) qrCache.delete(qrCache.keys().next().value)
+      qrCache.set(value, `data:image/svg+xml,${encodeURIComponent(qr.createSvgTag({ cellSize: 4, margin: 16 }))}`)
+    }
+    return qrCache.get(value)
+  }
   const state = { exposure: { phase: 'stopped' }, auth: { mode: config.get().auth.mode, passwordConfigured: false }, tunnel: { phase: 'stopped' } }
   const disconnect = () => { exposure?.disconnect(); tunnelListener?.disconnect() }
   const auth = createAuth(ctx, config.get().auth, disconnect)
@@ -177,6 +189,9 @@ export async function apply(ctx, config) {
               if (!item[key] || typeof ctx.connection.authenticatedUrl !== 'function') continue
               try { item.loginUrl = ctx.connection.authenticatedUrl(item[key]) } catch { /* Host does not expose a browser token. */ }
             }
+          }
+          for (const [item, key] of [[result.exposure, 'url'], [result.tunnel, 'publicUrl']]) {
+            if (item[key]) item.qr = qrData(item.loginUrl || item[key])
           }
           return Response.json({ type: 'server-response', rpcId: body.rpcId, result: { ok: true, value: result } })
         }

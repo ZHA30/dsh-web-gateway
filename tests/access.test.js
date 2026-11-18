@@ -87,6 +87,11 @@ test('proxy preserves request bodies and cookies, enforces external sources, rew
   for (const headers of [{ host: 'evil.example' }, { origin: 'null' }, { origin: 'https://evil.example' }, { 'sec-fetch-site': 'cross-site' }, { host: 'other.trycloudflare.com' }]) {
     assert.equal((await call(proxy.url, { authorization, ...headers })).status, 403)
   }
+  const navigation = { 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'navigate', 'sec-fetch-dest': 'document' }
+  assert.equal((await call(proxy.url, { authorization, ...navigation })).status, 200)
+  assert.equal((await call(proxy.url, { ...navigation })).status, 401)
+  assert.equal((await call(proxy.url, { authorization, ...navigation }, 'payload')).status, 403)
+  assert.equal((await call(proxy.url, { authorization, ...navigation, origin: 'https://evil.example' })).status, 403)
   assert.equal((await call(proxy.url, { [AUTH_HEADER]: 'forged', cookie: 'native=token' })).status, 401)
   const response = await call(`${proxy.url}/echo?q=1`, { authorization, origin: proxy.url, 'x-forwarded-host': 'evil.example' }, 'payload')
   assert.equal(response.status, 200)
