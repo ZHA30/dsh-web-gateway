@@ -18,6 +18,14 @@ The plugin provides local access, authentication, and Cloudflare Tunnel manageme
 - **Access links**: Open the local or tunnel address from settings, with the host token included when available.
 - **Status**: View listener and tunnel state and retry a failed tunnel from settings.
 
+## Install
+
+Install the plugin into a DSH profile and restart the host.
+
+```sh
+dsh plugin --profile <profile> add dsh-web-gateway
+```
+
 ## References
 
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
