@@ -1,0 +1,3 @@
+- insert:
+    - id: web-gateway
+      name: dsh-web-gateway
